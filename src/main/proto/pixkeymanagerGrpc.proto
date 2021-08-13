@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "br.com.zup";
+option java_outer_classname = "PixKeymanagerGrpc";
+
+
+package br.com.zup;
+import "google/protobuf/timestamp.proto";
+
+service PixService {
+  rpc cadastra (CadastraChavePixRequest) returns (CadastraChavePixResponse) {}
+}
+
+enum TipoConta {
+  UNKNOWN_CONTA = 0;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
+}
+
+enum TipoChave {
+  UNKNOWN_CHAVE = 0;
+  CPF = 1;
+  CELULAR = 2;
+  EMAIL = 3;
+  ALEATORIA = 4;
+}
+
+/**
+ * Cadastra chave
+ */
+message CadastraChavePixRequest {
+  string clienteId = 1;
+  TipoChave tipoChave = 2;
+  string valorChave = 3;
+  TipoConta tipoConta = 4;
+}
+
+message CadastraChavePixResponse {
+  string pixId = 1;
+}
