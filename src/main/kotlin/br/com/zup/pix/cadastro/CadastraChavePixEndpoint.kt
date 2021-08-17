@@ -2,8 +2,8 @@ package br.com.zup.pix.cadastro
 
 
 import br.com.zup.*
+import br.com.zup.compartilhado.ErrorHandler
 import br.com.zup.pix.TipoChave as TipoDeChave
-import br.com.zup.compartilhado.handlers.ExceptionHandler
 
 
 import io.grpc.stub.StreamObserver
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 
 @Singleton
-@ExceptionHandler
+@ErrorHandler
 class CadastraChavePixEndpoint(val gerenciadorCadastroChavePix: GerenciadorCadastroChavePix) :
     PixServiceGrpc.PixServiceImplBase() {
 

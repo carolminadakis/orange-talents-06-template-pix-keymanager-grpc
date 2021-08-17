@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 @Retention(RUNTIME)
 @Constraint(validatedBy = [])
 annotation class ValidUUID(
-    val message: String = "Formato UUID inválido",
+    val message: String = "formato UUID inválido",
     val groups: Array<KClass<Any>> = [],
     val payload: Array<KClass<Payload>> = [],
 )

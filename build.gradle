@@ -51,6 +51,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jasypt/jasypt
     implementation("org.jasypt:jasypt:1.9.3")
 
+    kaptTest "io.micronaut:micronaut-inject-java"
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.hamcrest:hamcrest-core:2.2")
+
 }
 
 
