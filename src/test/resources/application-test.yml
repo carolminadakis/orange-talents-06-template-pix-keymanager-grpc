@@ -1,0 +1,11 @@
+# Usando H2 como banco de dados para testes
+datasources:
+  default:
+    #url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:testDb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driverClassName: org.h2.Driver
+
+# Habilita log do contexto transacional
+logger:
+  levels:
+    io.micronaut.transaction: DEBUG

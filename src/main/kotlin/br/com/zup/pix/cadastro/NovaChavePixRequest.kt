@@ -3,6 +3,7 @@ package br.com.zup.pix.cadastro
 
 import br.com.zup.TipoConta
 import br.com.zup.conta.ContaEntity
+import br.com.zup.pix.TipoChave as TipoDeChave
 import br.com.zup.pix.TipoChave
 import br.com.zup.validacoes.ValidPixKey
 import br.com.zup.validacoes.ValidUUID
@@ -33,7 +34,7 @@ data class NovaChavePixRequest(
     fun toModel(conta: ContaEntity) : ChavePixEntity {
         return ChavePixEntity(
             clienteId = UUID.fromString(this.clienteId),
-            tipoChave = TipoChave.valueOf(this.tipoChave!!.name),
+            tipoChave = TipoDeChave.valueOf(this.tipoChave!!.name),
             valorChave = if(this.tipoChave == TipoChave.ALEATORIA) UUID.randomUUID().toString() else this.valorChave!!,
             tipoConta = TipoConta.valueOf(this.tipoConta!!.name),
             conta = conta
