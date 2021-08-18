@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 @ErrorHandler
 class CadastraChavePixEndpoint(val gerenciadorCadastroChavePix: GerenciadorCadastroChavePix) :
-    PixServiceGrpc.PixServiceImplBase() {
+    PixRegistrationServiceGrpc.PixRegistrationServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

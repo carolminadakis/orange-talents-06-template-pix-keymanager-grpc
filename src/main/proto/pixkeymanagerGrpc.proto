@@ -8,8 +8,12 @@ option java_outer_classname = "PixKeymanagerGrpc";
 package br.com.zup;
 import "google/protobuf/timestamp.proto";
 
-service PixService {
+service PixRegistrationService {
   rpc cadastra (CadastraChavePixRequest) returns (CadastraChavePixResponse) {}
+}
+
+service PixExclusionService{
+  rpc remove (RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 }
 
 enum TipoConta {
@@ -26,9 +30,9 @@ enum TipoChave {
   ALEATORIA = 4;
 }
 
-/**
- * Cadastra chave
- */
+
+// Cadastra chave
+
 message CadastraChavePixRequest {
   string clienteId = 1;
   TipoChave tipoChave = 2;
@@ -38,4 +42,14 @@ message CadastraChavePixRequest {
 
 message CadastraChavePixResponse {
   string pixId = 1;
+}
+
+// Remove chave
+message RemoveChavePixRequest {
+  string pixId = 1;
+  string clienteId = 2;
+}
+
+message RemoveChavePixResponse {
+  bool removido = 1;
 }
