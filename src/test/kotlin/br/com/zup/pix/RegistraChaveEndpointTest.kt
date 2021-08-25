@@ -1,20 +1,19 @@
 package br.com.zup.pix
 
+
 import br.com.zup.CadastraChavePixRequest
-import br.com.zup.PixServiceGrpc
-import br.com.zup.TipoChave.*
+import br.com.zup.PixRegistrationServiceGrpc
+import br.com.zup.TipoChave.CPF
+import br.com.zup.TipoChave.EMAIL
 import br.com.zup.TipoConta
 import br.com.zup.conta.ContaEntity
 import br.com.zup.conta.ContaResponse
 import br.com.zup.conta.InstituicaoResponse
 import br.com.zup.conta.TitularResponse
 import br.com.zup.externos.ErpItauClient
+import br.com.zup.pix.TipoChave
 import br.com.zup.pix.cadastro.ChavePixEntity
 import br.com.zup.pix.cadastro.repository.ChavePixRepository
-import br.com.zup.pix.TipoChave as TipoDeChave
-import br.com.zup.pix.TipoChave
-
-
 import io.grpc.ManagedChannel
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
@@ -27,6 +26,7 @@ import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -36,6 +36,7 @@ import org.mockito.Mockito
 import shared.grpc.violations
 import java.util.*
 import javax.inject.Inject
+import br.com.zup.pix.TipoChave as TipoDeChave
 
 /*
 Desabilitamos o controle transacional pois o gRPC Server roda numa thread separada,
@@ -45,7 +46,7 @@ caso contrário, não será possível preparar cenário dentro do método @Test
 @MicronautTest(transactional = false)
 internal class RegistraChaveEndpointTest(
     val repository: ChavePixRepository,
-    val grpcClient: PixServiceGrpc.PixServiceBlockingStub
+    val grpcClient: PixRegistrationServiceGrpc.PixRegistrationServiceBlockingStub
 ) {
     @Inject
     lateinit var itauClient: ErpItauClient;
@@ -174,6 +175,26 @@ internal class RegistraChaveEndpointTest(
         )
     }
 
+    fun `nao deve cadastrar chave pix quando os parametros forem invalidos`() {
+        // ação
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.cadastra(CadastraChavePixRequest.newBuilder().build())
+        }
+        //validação
+        with(thrown) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Dados inválidos", status.description)
+            MatcherAssert.assertThat(
+                violations(), containsInAnyOrder(
+                    Pair("clienteId", "não deve estar em branco"),
+                    Pair("clienteId", "formato de UUID inválido"),
+                    Pair("tipoConta", "não deve ser nulo"),
+                    Pair("tipoChave", "não deve ser nulo"),
+                )
+            )
+        }
+    }
+
     private fun chaveFake(
         tipo: TipoDeChave,
         chave: String = UUID.randomUUID().toString(),
@@ -194,6 +215,7 @@ internal class RegistraChaveEndpointTest(
         )
     }
 
+
     // Mock do client Http (para não ter que levantar todo o ambiente externo)
     @MockBean(ErpItauClient::class)
     fun itauClient(): ErpItauClient? {
@@ -204,8 +226,8 @@ internal class RegistraChaveEndpointTest(
     @Factory
     class Clients {
         @Bean
-        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): PixServiceGrpc.PixServiceBlockingStub {
-            return PixServiceGrpc.newBlockingStub(channel)
+        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): PixRegistrationServiceGrpc.PixRegistrationServiceBlockingStub {
+            return PixRegistrationServiceGrpc.newBlockingStub(channel)
         }
     }
 }
